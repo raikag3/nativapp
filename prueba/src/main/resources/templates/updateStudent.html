@@ -15,7 +15,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
-				<form autocomplete="off" action="#" th:action="@{/registrationStudent}"
+				<form autocomplete="off" action="#" th:action="@{/updateStudent}"
 					th:object="${student}" method="post" class="form-horizontal"
 					role="form">
 					<h2>Registration Form</h2>
@@ -65,42 +65,15 @@
 
 					<div class="form-group">
 						<div class="col-sm-9">
-							<button type="submit" class="btn btn-primary btn-block">Register Student</button>
+							<button type="submit" class="btn btn-primary btn-block">Save Student</button>
 						</div>
 					</div>
 					
 					<span th:utext="${successMessage}"></span>
-					
-					
+										
 				</form>
 			</div>
-			<div class="row">
-			<div class="col-md-6 col-md-offset-3">
-			<table style="overflow-x:auto;">
-			<tr>
-				<td>DNI</td>
-				<td>Nombre</td>
-				<td>Email</td>
-				<td>Action</td>
-			</tr>
-			 <th:block th:each="student : ${students}">
-			 	<tr>
-			 		<td th:text="${student.ni}"></td>				 	
-				 	<td th:text="${student.name+' '+student.lastName}"></td>
-				 	<td th:text="${student.email}"></td>
-				 	<td>
-				 	<a th:href="@{/deleteStudent(ni=${student.ni})}">
-						<img border="0" alt="W3Schools" th:src="@{/images/trash.png}" width="20" height="20">
-					</a>
-					<a th:href="@{/updateStudent(ni=${student.ni})}">
-						<img border="0" alt="W3Schools" th:src="@{/images/update.png}" width="20" height="20">
-					</a>
-				 	</td>				 					 
-			 	</tr>
-			</th:block>
-			</table>
-			</div>
-			</div>
+			
 		</div>
 	</div>
 

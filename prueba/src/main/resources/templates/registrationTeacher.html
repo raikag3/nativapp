@@ -89,10 +89,10 @@
 				 	<td th:text="${teacher.name+' '+teacher.lastName}"></td>
 				 	<td th:text="${teacher.email}"></td>
 				 	<td>
-				 	<a th:href="@{/deleteTeacher(id=${teacher.ni})}">
+				 	<a th:href="@{/deleteTeacher(ni=${teacher.ni})}">
 						<img border="0" alt="W3Schools" th:src="@{/images/trash.png}" width="20" height="20">
 					</a>
-					<a th:href="@{/updatetTeacher(id=${teacher.ni})}">
+					<a th:href="@{/updateTeacher(ni=${teacher.ni})}">
 						<img border="0" alt="W3Schools" th:src="@{/images/update.png}" width="20" height="20">
 					</a>
 				 	</td>				 					 

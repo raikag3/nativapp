@@ -129,7 +129,7 @@ public class LoginController {
 		return modelAndView;
 	}
 
-	@RequestMapping ("/StudentDelete")
+	@RequestMapping ("/deleteStudent")
 	@ResponseBody
 	public ModelAndView deleteStudent(String ni){
 		ModelAndView modelAndView = new ModelAndView();
@@ -143,6 +143,48 @@ public class LoginController {
 		List<Student> students = studentService.findAll();
 		modelAndView.addObject("students", students);
 		modelAndView.setViewName("registrationStudent");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value="/updateStudent")
+	@ResponseBody
+	public ModelAndView updateStudent(String ni){
+		ModelAndView modelAndView = new ModelAndView();
+		Student student = studentService.findByNi(ni);
+		modelAndView.addObject("student", student);
+		List<Student> students = studentService.findAll();
+		modelAndView.addObject("students", students);
+		modelAndView.setViewName("updateStudent");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/updateStudent", method = RequestMethod.POST)
+	public ModelAndView updateStudent(@Valid Student student, BindingResult bindingResult) {
+		ModelAndView modelAndView = new ModelAndView();
+		Student studentExists = studentService.findByNi(student.getNi());
+		if (studentExists == null) {
+			bindingResult
+					.rejectValue("email", "error.user",
+							"There is already a user registered with the email provided");
+		}
+		if (bindingResult.hasErrors()) {
+			modelAndView.setViewName("registrationStudent");
+		} else {
+			
+			studentExists.setEmail(student.getEmail());
+			studentExists.setGender(student.getGender());
+			studentExists.setName(student.getName());
+			studentExists.setLastName(student.getLastName());
+			
+			studentService.saveStudent(studentExists);
+			modelAndView.addObject("successMessage", "student has been registered successfully");
+			modelAndView.addObject("student", new Student());
+			List<Student> students = studentService.findAll();
+			modelAndView.addObject("students", students);
+			modelAndView.setViewName("registrationStudent");
+			
+		}
+		
 		return modelAndView;
 	}
 	
@@ -184,20 +226,21 @@ public class LoginController {
 	@RequestMapping("/courseDelete")
 	@ResponseBody
 	public ModelAndView deleteCourse(String code) {
-					    
-	    ModelAndView modelAndView = new ModelAndView();
-	    Course course = courseService.findByCode(code);
-		
-		modelAndView.addObject("course", course);
-		modelAndView.setViewName("updateCourse");
-		return modelAndView;
-			    
+		   ModelAndView modelAndView = new ModelAndView();
+		    Course course = courseService.findByCode(code);
+			if (course != null) courseService.delete(course.getCode());
+			course = new Course();
+			modelAndView.addObject("course", course);
+			List<Course> courses = courseService.findAll();		
+			modelAndView.addObject("courses", courses);
+			modelAndView.setViewName("registrationCourse");
+			return modelAndView;				    			    
 	}
 	
 	@RequestMapping("/courseUpdate")
 	@ResponseBody
 	public ModelAndView updateCourse(String code) {					    
-	  Course course = courseService.findByCode(code);	    
+		Course course = courseService.findByCode(code);	    
 	    ModelAndView modelAndView = new ModelAndView();		
 		List<Course> courses = courseService.findAll();		
 		modelAndView.addObject("courses", courses);
@@ -219,12 +262,18 @@ public class LoginController {
 		if (bindingResult.hasErrors()) {
 			modelAndView.setViewName("registrationCourse");
 		} else {
-			courseService.saveCourse(course);
+			
+			courseExists.setDescription(course.getDescription());
+			courseExists.setName(course.getName());
+			
+			courseService.saveCourse(courseExists);
+			
 			modelAndView.addObject("successMessage", "course has been created successfully");
-			modelAndView.addObject("course", new Course());
-			modelAndView.setViewName("registrationCourse");
+			modelAndView.addObject("course", new Course());						
 			List<Course> courses = courseService.findAll();		
 			modelAndView.addObject("courses", courses);
+			modelAndView.setViewName("registrationCourse");
+			
 			
 		}
 		
@@ -268,9 +317,10 @@ public class LoginController {
 	}
 		
 	
-	@RequestMapping("/teacherDelete")
+	@RequestMapping("/deleteTeacher")
 	@ResponseBody
-	public ModelAndView deleteTeacher (String ni){
+	public ModelAndView deleteTeacher (String ni){				
+		
 		Teacher teacher = teacherService.findByNi(ni) ;
 		if (teacher!=null)	teacherService.deleteTeacher(ni);		
 		ModelAndView modelAndView = new ModelAndView();
@@ -283,7 +333,41 @@ public class LoginController {
 	}
 	
 	
+	@RequestMapping(value="/updateTeacher")
+	@ResponseBody
+	public ModelAndView updateTeacher(String ni){
+		ModelAndView modelAndView = new ModelAndView();
+		Teacher teacher  =  teacherService.findByNi(ni);
+		modelAndView.addObject("teacher", teacher);		
+		modelAndView.setViewName("updateTeacher");
+		return modelAndView;
+	}
 	
-	
-	
+	@RequestMapping(value = "/updateTeacher", method = RequestMethod.POST)
+	public ModelAndView updateTeacher(@Valid Teacher teacher, BindingResult bindingResult) {
+		ModelAndView modelAndView = new ModelAndView();
+		Teacher teacherExists = teacherService.findByNi(teacher.getNi());
+		if (teacherExists == null) {
+			bindingResult
+					.rejectValue("email", "error.user",
+							"we cant find the teacher that you provided");
+		}
+		if (bindingResult.hasErrors()) {
+			modelAndView.setViewName("registrationTeacher");
+		} else {
+			
+			teacherExists.setName(teacher.getName());
+			teacherExists.setLastName(teacher.getLastName());
+			teacherExists.setEmail(teacher.getEmail());
+			teacherExists.setGender(teacher.getGender());
+			teacherService.saveTeacher(teacherExists);
+			modelAndView.addObject("successMessage", "Teacher has been added successfully");
+			List<Teacher> teachers =  teacherService.findAll();
+			modelAndView.addObject("teachers", teachers);
+			modelAndView.addObject("teacher", new Teacher());
+			modelAndView.setViewName("registrationTeacher");			
+		}
+		
+		return modelAndView;
+	}
 }
